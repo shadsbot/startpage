@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<title>Start Page</title>
+		<style type="text/css">
+			body {
+				margin: 0; padding: 0;
+				background-color: #111116;
+				background-image:url('wp.jpg');
+			}
+			input.searchBar {
+				width: 250px;
+				height: 30px;
+				background-color: #111116;
+				border: 1px solid #1111aa;
+				color: white;
+				padding: 10px;
+			}
+			#body{
+				margin: 0 auto;
+				text-align: center;
+				color: white;
+			}
+			#suggestions{
+				padding-top: 30px;
+				font-size: 20pt;
+			}
+			a:link,a:visited {
+				color: white;
+				text-decoration: none;
+			}
+		</style>
+	</HEAD>
+	<BODY>
+		<div id="container">
+			<div id="body">
+				<h1>Pale Moon 25.2.1</h1>
+				<form class="search" method="get" action="https://encrypted.google.com/search" onsubmit = "return validateForm()">
+					<input class="searchBar" id="searchBar" type="Search" name="q" placeholder="" onKeyUp="parseThatShit()" autofocus/>
+				</form>
+				<div id="suggestions">
+				
+				</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript">
+			var websites = new Array();
+					websites = [	["http://reddit.com",false,"reddit.com"],
+										["http://google.com",false,"google.com"],
+										["http://facebook.com",false,"facebook.com"],
+										["http://my.fsu.edu",false,"my.fsu.edu"],
+										["http://campus.fsu.edu",false,"campus.fsu.edu"],
+										["http://github.com",false,"github.com"],
+										["http://twitter.com",false,"twitter.com"],
+										["http://webmail.fsu.edu",false,"webmail.fsu.edu"],
+										["http://tumblr.com",false,"tumblr.com"],
+										["http://gmail.com",false,"gmail.com"],
+										["http://yahoo.com",false,"yahoo.com"]
+									];
+
+			function parseThatShit() {
+				var x = document.getElementById('searchBar').value;
+				for(var z = 0; z < websites.length; z++)
+				{
+					if ( websites[z][0].indexOf(x) != -1 )
+					{
+						// set it to display
+						websites[z][1] = true;
+					}
+						else {
+							websites[z][1] = false;
+						}
+				}
+				// call display function
+				writeDisplay();
+			}
+			function writeDisplay() {
+				var content = document.getElementById('suggestions');
+				content.innerHTML = "";
+				for (var x = 0; x < websites.length; x++)
+				{
+					if (websites[x][1] == true)
+					{
+						content.innerHTML += "<a href='" + websites[x][0] + "'>" + websites[x][2] + "</a><br />";
+					}
+				}
+				if (document.getElementById("searchBar").value == "")
+				{
+					content.innerHTML = "";
+				}
+			}
+			// create a random-ass name that will prevent auto-complete from doing its thing
+			document.getElementById('searchBar').name = Math.random().toString(36).substring(7);
+			
+			function validateForm() {
+				var countThing = 0;
+				var record;
+				for (var x = 0; x < websites.length; x++)
+				{
+					if ( websites[x][1] == true ) { countThing++; record = x; }
+				}
+
+				// If it's a subreddit
+				if ( document.getElementById('searchBar').value.indexOf("/r/") == 0) { location.href = "http://reddit.com" + document.getElementById('searchBar').value; return false;}
+				// if it's a website on the list
+				if ( countThing == 1 ) { location.href = websites[record][0]; return false; }
+				// if it's a URL
+				var re = new RegExp('[a-z]{1,}\.[a-z]{2,11}');
+				if(document.getElementById('searchBar').value.match(re)) { location.href = "http://"+document.getElementById('searchBar').value; return false; }
+				
+
+				document.getElementById('searchBar').name="q";
+				return true;
+			}
+		</script>
+	</BODY>
+</HTML>
